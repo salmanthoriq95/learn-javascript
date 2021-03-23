@@ -1,11 +1,12 @@
 //membuat class untuk data nasabah
 class DataNasabah {
 	//konstruksi data nasabah
-	constructor (norek, nama, alamat, saldo){
+	constructor (norek, nama, alamat, saldo,bungaharian){
 		this.noRek = norek;
 		this.nama = nama;
 		this.alamat = alamat;
 		this.saldo = Number(saldo);
+		this.bungaharian = Number(bungaharian);
 	}
 	tabung(jumlah){ //method menabung
 		if (jumlah>0){
@@ -26,6 +27,12 @@ class DataNasabah {
 			alert("inputan salah");
 			mainProgram();
 		}
+	}
+	bunga(bunga,hari){/*method perhitungan bunga per hari nya*/ 
+		this.bungaharian = this.saldo * bunga / 100 / hari;
+	}
+	bayarBunga(){
+		this.saldo = this.saldo + this.bungaharian;
 	}
 }
 //fungsi menambahkan data nasabah
@@ -87,9 +94,48 @@ function showData() {
 	alert(show);
 	mainProgram();
 }
+//cek tahun
+function cekTahun(){
+	var hari, tahun = new Date().getFullYear();
+	if (tahun%4==0){
+		hari = Number(366);
+	} else {
+		hari = Number(365)
+	}
+	return hari;
+}
+//bayar bunga nasabah
+function byrBunga (){
+	var i = prompt("masukan no rekening atau nama nasabah :");
+	i = searchNasabah(i);//pencarian index di array nasabah
+	if (i>=0){
+		nasabah[i].bayarBunga(); //method pembayaran bunga
+		alert("nasabah "+nasabah[i].nama+" behasil dilunasi bunganya. saldo terakhir : "+nasabah[i].saldo);
+		mainProgram();
+	} else {
+		alert("data tidak ditemukan");
+		mainProgram();
+	}
+}
+//hitung bunga harian nasabah
+function hitungBunga() {
+	var i = prompt("masukan no rekening atau nama nasabah :");
+	i = searchNasabah(i); //pencarian index di array nasabah
+	var bg = prompt("masukkan nominal bunga pertahunnya : ");
+	var hari = cekTahun();//pengecekan jumlah hari dalam tahun ini
+	if (i>=0){ 
+		nasabah[i].bunga(bg,hari); //penambahan dan perhitungan akumulasi bunga harian 
+		alert ("bunga "+nasabah[i].nama+" berhasil ditambahkan, jumlah bunga hari ini adalah Rp "+nasabah[i].saldo*bg/100/hari);
+		alert ("akumulasi total bunganya adalah Rp "+nasabah[i].bungaharian);
+		mainProgram();
+	} else {
+		alert("data tidak ditemukan");
+		mainProgram();
+	}
+}
 //fungsi program utama
 function mainProgram(){
-	var pil = prompt ("masukan pilihan anda : \n 1. Data Nasabah \n 2. Menambah data nasabah \n 3. menghapus data nasabah \n 4. Nasabah Menabung \n 5. Nasabah menarik uang \n 6. mengganti profil nasabah \n  0. keluar");
+	var pil = prompt ("masukan pilihan anda : \n 1. Data Nasabah \n 2. Menambah data nasabah \n 3. menghapus data nasabah \n 4. Nasabah Menabung \n 5. Nasabah menarik uang \n 6. mengganti profil nasabah \n 7. menambahkan bunga nasabah \n 8. membayar bunga nasabah \n 0. keluar");
 	switch (pil){
 		case "1" : showData();break;
 		case "2" : tbhNasabah(); break;
@@ -131,11 +177,14 @@ function mainProgram(){
 				mainProgram();
 			}
 			break;
+		case "7" : hitungBunga(); break;
+		case "8" : byrBunga();
 		case "0" : return 0;
 		default : alert ("masukan pilihan yang benar!"); mainProgram();
 	}
 }
 //dummy data nasabah di dalam array
-var nasabah = [new DataNasabah(1234,"salman","kuningan",0),new DataNasabah(4321,"thoriq","alam kubur",0)];
+var nasabah = [new DataNasabah(1234,"salman","kuningan",0,0),new DataNasabah(4321,"thoriq","alam kubur",0,0)];
+var hari = cekTahun();
 //main program
 mainProgram();
